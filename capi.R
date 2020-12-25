@@ -3,35 +3,35 @@
 install.packages("dirichlet", repos="http://R-Forge.R-project.org")
 library(dirichlet)
 library(MCMCpack)
-#?MCMCpack
-#??MCMCpack
-#library(plotly)
-#density <- ddirichlet(c(.1,.2,.7), c(1,1,1))
-#draws <- rdirichlet(2000, c(1,5,1) )
-#draws <- as.data.frame(draws)
-#attach(draws)
-#plot_ly(x=V1, y=V2, z=V3, type="scatter3d", mode="markers")
+library(dplyr)
 library(compositions)
 library(tensorA)
 
 
-Solved <- read.delim("~/Escritorio/Proyectos/AboutEvidence/Solved-cases.csv")
+Solved <- read.delim("Solved-cases.csv")
 attach(Solved)
+Solved$Group <- as.character(Solved$Group)
+df <- data.frame("Cx", "14/02/218","14/02/2017",-360,as.character("A"))
+names(df) <- c("Ind", "ABD", "DBD", "DBD.ABD", "Group")
+Solved <- rbind (Solved,df)
+
+Freqs <- data.frame(table(Solved$Group))
+
+#
+draw = 10000
+alpha = c(1, 4, 60, 11, 6, 4, 4)
+dimension = 7
+x = rdirichlet(draw, alpha)
+fiteo = data.frame(fit.dirichlet(x, "ml"))
+
+?fit.dirichlet
+
+o = data.frame(c(1,2,3,4,5,6,7))
+names(o) <- "grupo"
+fiteo <- cbind(o, fiteo)
+plot(fiteo$grupo, fiteo$p, ylab = "prior", xlab = "group")
 
 # Descriptive statistics
 hist(DBD.ABD, breaks = 30, include.lowest = TRUE, main = "DBD - ABD")
 plot(sort(DBD.ABD), ylab = "DBD - ABD", xlab = "Cantidad de casos", pch = 20)
 plot(ecdf(DBD.ABD)) # Diferenciar por año de secuestro de la madre
-
-# Not normal
-z.norm<-(DBD.ABD-mean(DBD.ABD))/sd(DBD.ABD)
-qqnorm(z.norm)
-abline(0,1)
-
-# Dirichlet magic
-fitDirichlet(DBD.ABD, elog=mean(ult(DBD.ABD)),alpha0=rep(1,length(elog)),maxIter=20,n=nrow(DBD.ABD))
-Z <- rdirichlet(100, c(4,3,2))
-
-x <- rDirichlet.acomp(100,c(1,2,3,4))
-fitDirichlet(x)
-x
