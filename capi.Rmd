@@ -84,7 +84,7 @@ New solved cases could be incorporated to the solved-cases.csv dataset and actua
 o = data.frame(c(1,2,3,4,5,6,7))
 names(o) <- "grupo"
 fiteo <- cbind(o, fiteo)
-plot(fiteo$grupo, fiteo$p, ylab = "prior", xlab = "group", type = "o")
+plot(fiteo$grupo, fiteo$p, ylab = "prior", xlab = "group", type = "o", pch = 20)
 ```
 
 
