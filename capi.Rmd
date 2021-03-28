@@ -17,6 +17,7 @@ Dirichlet package provides the key functions of the code.
 ```{r packages}
 library(dirichlet)
 library(dplyr)
+library(boot)
 #library(compositions)
 #library(tensorA)
 ```
@@ -56,7 +57,22 @@ Group D or 4: 30;120
 Group E or 5: 120;240 
 Group F or 6: 240;360 
 Group G or 7: 360;inf
-Below we analyze the frequency table of that groups in the solved-cases.csv dataset:
+Below we analyze the frequency table of that groups in the solved-cases.csv dataset and estimate it with 
+```{r relative freqs, echo=TRUE}
+?boot
+dif <- Solved$Group
+
+sample_freqs = function(Solved, indices){
+ sample = Solved[indices, ]
+ bar = count(sample)
+ return(bar)
+}
+
+boot(dif, statistic = sample_freqs, R = 5000)
+
+```
+
+Before running the model, we evaluate the uncertainity about the data using non-parametric bootstrapping.
 ```{r relative freqs, echo=TRUE}
 Freqs <- data.frame(table(Solved$Group))
 Freqs
